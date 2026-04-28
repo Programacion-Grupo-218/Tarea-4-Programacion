@@ -14,10 +14,22 @@ class Cliente(Entidad):
 
 # Clase abstracta al servicio, y al menos tres servicios especializados que hereden de ella, implementando polimorfismo y métodos sobrescritos para calcular costos, describir servicios y validar parámetros.
 class Servicio(Entidad):
+    def __init__(self, nombre, costo_base):
+        self.nombre = nombre
+        self.costo_base = costo_base
+
+    def calcular_costo(self, duracion):
+        pass
+
+    def descripcion(self):
+        pass
+
+    def validar_parametros(self, duracion):
+        pass
 
 
 # Una clase Reserva que integre cliente, servicio, duración y estado, e implemente confirmación, cancelación y procesamiento con manejo de excepciones.
-class Reserva:
+class Reserva(Entidad, Servicio):
 
 # Métodos sobrecargados (por ejemplo, diferentes variantes del cálculo de costos con impuestos, descuentos o parámetros opcionales).
 
