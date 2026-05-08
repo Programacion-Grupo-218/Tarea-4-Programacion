@@ -14,20 +14,15 @@ class Cliente(Entidad):
 
 # Clase abstracta al servicio, y al menos tres servicios especializados que hereden de ella, implementando polimorfismo y métodos sobrescritos para calcular costos, describir servicios y validar parámetros.
 class Servicio:
-# Clase base abstracta para servicios
+# Clase asbtracta del servicio
     
-    def __init__(self, id_servicio, nombre, precio_base):
+    def __init__(self, id_servicio: str, nombre: str, precio_base: float):
         if not id_servicio or not nombre or precio_base <= 0:
-            raise ValidacionError("ID, nombre y precio_base > 0 son obligatorios")
+            raise ValueError("ID, nombre y precio_base > 0 son obligatorios")
+        
         self._id = id_servicio
         self._nombre = nombre
         self._precio_base = precio_base
-        self._disponible = True
-
-    @property
-    def id(self): return self._id
-    @property
-    def nombre(self): return self._nombre
 
     def calcular_costo(self, duracion):
         raise NotImplementedError("Método abstracto: implementar en clase hija")
@@ -39,63 +34,68 @@ class Servicio:
         raise NotImplementedError("Método abstracto: implementar en clase hija")
 
 
-# 3 SERVICIOS ESPECIALIZADOS
+# 3 SERVICIOS
 
-class ServicioHospedaje(Servicio):
-    def __init__(self, id_servicio, nombre, precio_base, precio_noche_extra=0):
+class ServicioSala(Servicio):
+    
+    def __init__(self, id_servicio, nombre, precio_base, capacidad: int):
         super().__init__(id_servicio, nombre, precio_base)
-        self.precio_noche_extra = precio_noche_extra
+        self.capacidad = capacidad
 
-    def validar_parametros(self, duracion):
-        if duracion <= 0 or not isinstance(duracion, (int, float)):
-            raise ValidacionError("La duración debe ser mayor a 0")
+    def validar_parametros(self, horas: float):
+        if horas <= 0 or horas > 24:
+            raise ValueError("La duración debe estar entre 0 y 24 horas")
         return True
 
-    def calcular_costo(self, duracion):
-        self.validar_parametros(duracion)
-        return self._precio_base + (max(0, duracion - 1) * self.precio_noche_extra)
-
-    def describir(self):
-        return f"{self.nombre} - Hospedaje por {self._precio_base} (noche extra: {self.precio_noche_extra})"
-
-
-class ServicioTransporte(Servicio):
-    def __init__(self, id_servicio, nombre, precio_base, tarifa_km=0):
-        super().__init__(id_servicio, nombre, precio_base)
-        self.tarifa_km = tarifa_km
-
-    def validar_parametros(self, duracion):  # aquí duracion = kilómetros
-        if duracion <= 0:
-            raise ValidacionError("La distancia debe ser mayor a 0")
-        return True
-
-    def calcular_costo(self, duracion):
-        self.validar_parametros(duracion)
-        return self._precio_base + (duracion * self.tarifa_km)
-
-    def describir(self):
-        return f"{self.nombre} - Transporte base {self._precio_base} + {self.tarifa_km} por km"
-
-
-class ServicioTour(Servicio):
-    def __init__(self, id_servicio, nombre, precio_base, max_personas=10):
-        super().__init__(id_servicio, nombre, precio_base)
-        self.max_personas = max_personas
-
-    def validar_parametros(self, duracion):
-        if duracion < 1 or duracion > 8:
-            raise ValidacionError("La duración del tour debe estar entre 1 y 8 horas")
-        return True
-
-    def calcular_costo(self, duracion):
-        self.validar_parametros(duracion)
-        costo = self._precio_base * duracion
-        if duracion > 5:
+    def calcular_costo(self, horas: float):
+        self.validar_parametros(horas)
+        costo = self._precio_base * horas
+        if horas > 8:                    # Descuento por día completo
             costo *= 0.9
-        return costo
+        return round(costo, 2)
 
     def describir(self):
-        return f"{self.nombre} - Tour guiado (máx {self.max_personas} personas)"
+        return f"Sala '{self._nombre}' - ${self._precio_base}/hora (Cap: {self.capacidad} personas)"
+
+
+class ServicioAlquilerEquipo(Servicio):
+    
+    def __init__(self, id_servicio, nombre, precio_base, precio_por_dia_extra: float = 0):
+        super().__init__(id_servicio, nombre, precio_base)
+        self.precio_por_dia_extra = precio_por_dia_extra
+
+    def validar_parametros(self, dias: int):
+        if dias < 1:
+            raise ValueError("El alquiler debe ser de al menos 1 día")
+        return True
+
+    def calcular_costo(self, dias: int):
+        self.validar_parametros(dias)
+        costo = self._precio_base + (max(0, dias - 1) * self.precio_por_dia_extra)
+        return round(costo, 2)
+
+    def describir(self):
+        return f"{self._nombre} - ${self._precio_base} (primer día) + ${self.precio_por_dia_extra}/día extra"
+
+
+class ServicioAsesoria(Servicio):
+    
+    def __init__(self, id_servicio, nombre, precio_base, tarifa_hora_experto: float):
+        super().__init__(id_servicio, nombre, precio_base)
+        self.tarifa_hora_experto = tarifa_hora_experto
+
+    def validar_parametros(self, horas: float):
+        if horas < 1 or horas > 12:
+            raise ValueError("La asesoría debe durar entre 1 y 12 horas")
+        return True
+
+    def calcular_costo(self, horas: float):
+        self.validar_parametros(horas)
+        costo = (self._precio_base * horas) + (horas * self.tarifa_hora_experto)
+        return round(costo, 2)
+
+    def describir(self):
+        return f"Asesoría '{self._nombre}' - Base ${self._precio_base} + tarifa experto"
 
 
 # Una clase Reserva que integre cliente, servicio, duración y estado, e implemente confirmación, cancelación y procesamiento con manejo de excepciones.
