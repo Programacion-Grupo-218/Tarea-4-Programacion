@@ -97,12 +97,65 @@ class ServicioAsesoria(Servicio):
     def describir(self):
         return f"Asesoría '{self._nombre}' - Base ${self._precio_base} + tarifa experto"
 
+ 
+#Clase Reserva 
+class Reserva(Entidad, Servicio):     #para los fallos en el módulo de reservas 
+    pass 
 
-# Una clase Reserva que integre cliente, servicio, duración y estado, e implemente confirmación, cancelación y procesamiento con manejo de excepciones.
-class Reserva(Entidad, Servicio):
+class Reserva(Entidad):
+    def __init__(self,cliente, servicio, duracion):
+        if not cliente or not servicio:
+            raise ValueError("Se requiere un cliente y un servicio para la reserva.")
 
-# Métodos sobrecargados (por ejemplo, diferentes variantes del cálculo de costos con impuestos, descuentos o parámetros opcionales).
+        self.cliente = cliente
+        self.servicio = servicio
+        self.duracion = duracion
+        self._estado = "PENDIENTE"
+        self._costo_total = 0.0
 
+@property
+def estado(self):
+    return self._estado
+
+def procesar_reserva(self):
+    try:
+        log_event(f"Procesando reserva: Cliente {self.cliente}")
+        
+        self.servicio.validar_parametros(self.duracion)
+        self._costo_total = self.servicio.calcular_costo(self.duracion)
+
+        log_event(f"Reserva procesada. Costo base: ${self._costo_total}")
+    except (ValueError, TypeError) as e:
+        log_error(e, "Error de validacion en reserva")
+        raise ReservaError(f"Datos de reserva invalidos: {e}")
+    except Exception as e:
+        log_error(e, "Error critico no identificado")
+        raise
+
+def confirmar(self):
+    if self._estado == "PENDIENTE"
+        self._estado = "CONFIRMADA"
+        log_event( "Reserva confirmada exitosamente")
+    else:
+        log_error("No se pudo confirmar: La reserva no esta pendiente")
+
+def cancelar(self):
+    try:
+        self._estado = "CANCELADA"
+        log_event("Reserva cancelada")
+    finally:
+        print(f"Log: Finalizado proceso de cancelacion para {self.cliente}")
+
+#métodos sobrecargados 
+def calcular_total(self, impuesto: float = 0.0, descuento : float = 0.0):
+    total = self._costo_total
+    if impuesto > 0:
+        total += (total * impuesto)
+    if descuento > 0:
+        total -=descuento
+    return round(total, 2)
+    
+            
 # Un archivo de logs donde se registren todos los errores y eventos relevantes.
 contador_logs = 0
 LOG_FILE = "sistema_reservas.log"
