@@ -203,7 +203,7 @@ class SistemaReservasGUI:
             total_con_iva = res.calcular_total(impuesto=0.19)
             
             # Mostrar resultado
-            info = f"✅ EXITOSO: {cliente.nombre}\n   Servicio: {servicio._nombre}\n   Pago Total: ${total_con_iva}\n   Estado: {res.estado}\n"
+            info = f" EXITOSO: {cliente.nombre}\n   Servicio: {servicio._nombre}\n   Pago Total: ${total_con_iva}\n   Estado: {res.estado}\n"
             info += "-"*45 + "\n"
             self.monitor.insert(tk.END, info)
             self.monitor.see(tk.END)
