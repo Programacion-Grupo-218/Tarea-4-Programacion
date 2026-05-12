@@ -6,7 +6,6 @@ from tkinter import messagebox
 
 # Clase abstracta que represente las entidades generales del sistema
 class Entidad:
-
 #Clase abstracta del sistema
 
     def __init__(self, id_sistema: str):
