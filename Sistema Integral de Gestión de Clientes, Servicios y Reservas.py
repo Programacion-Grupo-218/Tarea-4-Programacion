@@ -6,6 +6,7 @@ from tkinter import messagebox
 
 # Clase abstracta que represente las entidades generales del sistema
 class Entidad:
+<<<<<<< HEAD
 #Clase abstracta del sistema
 
     def __init__(self, id_sistema: str):
@@ -23,6 +24,8 @@ class Entidad:
     #Método para implementar el poliformismo
         raise NotImplementedError("Error: El método 'obtener_resumen' debe ser implementado por la clase hija.")
 
+=======
+>>>>>>> 7063b23f21154fb51424be07db92dd844a9ff222
 
 
 # Clase cliente con validacion robusta y encapsulacion de datos personales
@@ -30,6 +33,7 @@ class Cliente(Entidad):
 
 
 # Clase abstracta al servicio, y al menos tres servicios especializados que hereden de ella, implementando polimorfismo y métodos sobrescritos para calcular costos, describir servicios y validar parámetros.
+<<<<<<< HEAD
 class Servicio:
 # Clase asbtracta del servicio
     
@@ -195,3 +199,15 @@ def log_error(error, context=""):
 if __name__ == "__main__":
     app = SistemaReservasGUI()
     app.run()
+=======
+class Servicio(Entidad):
+
+
+# Una clase Reserva que integre cliente, servicio, duración y estado, e implemente confirmación, cancelación y procesamiento con manejo de excepciones.
+class Reserva:
+
+# Métodos sobrecargados (por ejemplo, diferentes variantes del cálculo de costos con impuestos, descuentos o parámetros opcionales).
+
+# Logs y pruebas
+# Interfaz con tkinter y main() 
+>>>>>>> 7063b23f21154fb51424be07db92dd844a9ff222
